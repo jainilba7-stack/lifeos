@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Profile & QR — LifeOS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand">LifeOS</div></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>📊</span> Dashboard</a>
+        <a href="tasks.html" class="nav-link"><span>📝</span> Tasks</a>
+        <a href="expenses.html" class="nav-link"><span>💰</span> Expenses & Budget</a>
+        <a href="medicines.html" class="nav-link"><span>💊</span> Medicine Vault</a>
+        <a href="documents.html" class="nav-link"><span>📂</span> Document Vault</a>
+        <a href="goals.html" class="nav-link"><span>🎯</span> Goals</a>
+        <a href="habits.html" class="nav-link"><span>🔥</span> Habit Tracker</a>
+        <a href="appointments.html" class="nav-link"><span>📅</span> Appointments</a>
+        <a href="notes.html" class="nav-link"><span>📌</span> Notes</a>
+        <a href="reminders.html" class="nav-link"><span>🔔</span> Reminders</a>
+        <a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a>
+        <a href="emergency.html" class="nav-link active"><span>🆘</span> Emergency Card</a>
+        <a href="profile.html" class="nav-link"><span>⚙️</span> Settings & Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logoutUser()" class="btn btn-danger" style="width: 100%;">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h2>Emergency Medical Profile & QR Card</h2>
+      </header>
+
+      <main class="content-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem;">
+          <div>
+            <div class="emergency-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff;">🆘 EMERGENCY CARD</h3>
+                <div id="card-blood-badge" class="blood-badge">A+</div>
+              </div>
+
+              <div style="margin-bottom: 1.25rem;">
+                <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Primary Emergency Contact</div>
+                <div id="card-contact-text" style="font-size: 1.05rem; font-weight: 700; margin-top: 0.2rem;">Not configured</div>
+              </div>
+
+              <div style="margin-bottom: 1.5rem;">
+                <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Allergies & Medical Warnings</div>
+                <div id="card-allergies-text" style="font-size: 0.95rem; color: #cbd5e1; margin-top: 0.2rem;">No known allergies</div>
+              </div>
+
+              <div style="text-align: center; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <button id="generate-qr-btn" class="btn btn-primary">Generate Emergency QR Code</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem;">Configure Emergency Details</h3>
+            <form id="emergency-form">
+              <div class="form-group">
+                <label for="emg-blood">Blood Group</label>
+                <select id="emg-blood" class="form-control">
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="Unknown">Unknown</option>
+                </select>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label for="emg-contact-name">Contact Name</label>
+                  <input type="text" id="emg-contact-name" class="form-control" placeholder="e.g. Ramesh Patel">
+                </div>
+                <div class="form-group">
+                  <label for="emg-contact-phone">Contact Phone</label>
+                  <input type="text" id="emg-contact-phone" class="form-control" placeholder="+91 9876543210">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="emg-contact-relation">Relationship</label>
+                <input type="text" id="emg-contact-relation" class="form-control" placeholder="e.g. Father, Spouse, Brother">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label for="emg-doc-name">Doctor Name</label>
+                  <input type="text" id="emg-doc-name" class="form-control" placeholder="e.g. Dr. Mehta">
+                </div>
+                <div class="form-group">
+                  <label for="emg-doc-phone">Doctor Phone</label>
+                  <input type="text" id="emg-doc-phone" class="form-control" placeholder="+91 9876543211">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="emg-allergies">Known Allergies</label>
+                <input type="text" id="emg-allergies" class="form-control" placeholder="e.g. Penicillin, Peanuts">
+              </div>
+
+              <div class="form-group">
+                <label for="emg-chronic">Chronic Medical Conditions</label>
+                <input type="text" id="emg-chronic" class="form-control" placeholder="e.g. Asthma, Diabetes">
+              </div>
+
+              <div class="form-group">
+                <label for="emg-notes">Emergency Notes</label>
+                <textarea id="emg-notes" class="form-control" rows="2" placeholder="e.g. Carries EpiPen in backpack"></textarea>
+              </div>
+
+              <div style="margin: 1.5rem 0; padding: 1rem; background: var(--bg-card); border-radius: var(--radius-md);">
+                <strong style="font-size: 0.9rem; display: block; margin-bottom: 0.75rem;">🔒 Privacy: Select fields to share in Public QR Payload</strong>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.85rem;">
+                  <label><input type="checkbox" id="qr-share-blood" checked> Blood Group</label>
+                  <label><input type="checkbox" id="qr-share-name" checked> Emergency Contact Name</label>
+                  <label><input type="checkbox" id="qr-share-phone" checked> Emergency Contact Phone</label>
+                  <label><input type="checkbox" id="qr-share-allergies" checked> Allergies</label>
+                  <label><input type="checkbox" id="qr-share-notes"> Emergency Notes</label>
+                  <label><input type="checkbox" id="qr-share-doc"> Doctor Phone</label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Save Emergency Profile</button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="qr-modal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 400px; text-align: center;">
+      <div class="modal-header">
+        <h3>Emergency Card QR Code</h3>
+        <button type="button" onclick="document.getElementById('qr-modal').classList.remove('active')" style="color: var(--text-muted);">✕</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+        <img id="emergency-qr-img" class="qr-code-img" alt="Emergency QR Code">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">First responders can scan this QR code to access your authorized emergency contact details.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/emergency.js"></script>
+</body>
+</html>

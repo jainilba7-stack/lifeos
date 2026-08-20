@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — LifeOS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">LifeOS</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link active"><span>📊</span> Dashboard</a>
+        <a href="tasks.html" class="nav-link"><span>📝</span> Tasks</a>
+        <a href="expenses.html" class="nav-link"><span>💰</span> Expenses & Budget</a>
+        <a href="medicines.html" class="nav-link"><span>💊</span> Medicine Vault</a>
+        <a href="documents.html" class="nav-link"><span>📂</span> Document Vault</a>
+        <a href="goals.html" class="nav-link"><span>🎯</span> Goals</a>
+        <a href="habits.html" class="nav-link"><span>🔥</span> Habit Tracker</a>
+        <a href="appointments.html" class="nav-link"><span>📅</span> Appointments</a>
+        <a href="notes.html" class="nav-link"><span>📌</span> Notes</a>
+        <a href="reminders.html" class="nav-link"><span>🔔</span> Reminders</a>
+        <a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a>
+        <a href="emergency.html" class="nav-link"><span>🆘</span> Emergency Card</a>
+        <a href="profile.html" class="nav-link"><span>⚙️</span> Settings & Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logoutUser()" class="btn btn-danger" style="width: 100%;">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Command Center -->
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-search-input" class="form-control" placeholder="Search tasks, notes, expenses, docs...">
+        </div>
+
+        <div class="topbar-actions">
+          <div class="notification-btn" onclick="window.location.href='reminders.html'">
+            <button class="btn-icon">🔔</button>
+            <span id="notif-badge" class="notification-badge" style="display: none;">0</span>
+          </div>
+          <div class="user-profile-menu" onclick="window.location.href='profile.html'">
+            <div id="topbar-avatar"></div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <!-- Welcome Greeting Section -->
+        <div style="margin-bottom: 2rem;">
+          <h2 id="user-greeting" style="font-size: 1.8rem; font-weight: 800;">Good morning 👋</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">Here's what's happening across your personal life today.</p>
+        </div>
+
+        <!-- Quick Statistics Metric Cards -->
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📝</div>
+            <div class="stat-info">
+              <h4>Tasks Remaining</h4>
+              <div id="stat-tasks" class="value">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">💸</div>
+            <div class="stat-info">
+              <h4>Month Expenses</h4>
+              <div id="stat-expenses" class="value">₹0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">🎯</div>
+            <div class="stat-info">
+              <h4>Active Goals</h4>
+              <div id="stat-goals" class="value">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">📂</div>
+            <div class="stat-info">
+              <h4>Docs Expiring Soon</h4>
+              <div id="stat-expiring-docs" class="value">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(129, 140, 248, 0.15); color: #818cf8;">📅</div>
+            <div class="stat-info">
+              <h4>Appointments</h4>
+              <div id="stat-appointments" class="value">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart Auto-Generated Insights Section -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">✨ Smart Life Insights</h3>
+          <div id="insights-container" class="insights-container">
+            <div class="spinner"></div> Loading dynamic data insights...
+          </div>
+        </div>
+
+        <!-- Dashboard Layout Split: Today's Timeline & Finance Summary -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem;">
+          <!-- Today's Timeline Card -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700;">🕒 Today's Schedule</h3>
+              <a href="tasks.html" style="font-size: 0.85rem;">View Tasks →</a>
+            </div>
+            <div id="timeline-container" class="timeline-list">
+              <div class="spinner"></div> Loading schedule...
+            </div>
+          </div>
+
+          <!-- Financial Summary Chart Card -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="font-size: 1.1rem; font-weight: 700;">💳 Monthly Budget & Expenses</h3>
+              <a href="expenses.html" style="font-size: 0.85rem;">Manage Budget →</a>
+            </div>
+            <div style="height: 220px; position: relative;">
+              <canvas id="financeChart"></canvas>
+            </div>
+            <p id="budget-progress-text" style="font-size: 0.85rem; color: var(--text-secondary); text-align: center; margin-top: 1rem;"></p>
+          </div>
+        </div>
+
+        <!-- Goals Progress Bar Overview -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; margin-top: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700;">🎯 Active Goals Momentum</h3>
+            <a href="goals.html" style="font-size: 0.85rem;">All Goals →</a>
+          </div>
+          <div id="goals-progress-container">
+            <div class="spinner"></div> Loading goals...
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>

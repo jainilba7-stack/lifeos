@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker & Budget — LifeOS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand">LifeOS</div></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>📊</span> Dashboard</a>
+        <a href="tasks.html" class="nav-link"><span>📝</span> Tasks</a>
+        <a href="expenses.html" class="nav-link active"><span>💰</span> Expenses & Budget</a>
+        <a href="medicines.html" class="nav-link"><span>💊</span> Medicine Vault</a>
+        <a href="documents.html" class="nav-link"><span>📂</span> Document Vault</a>
+        <a href="goals.html" class="nav-link"><span>🎯</span> Goals</a>
+        <a href="habits.html" class="nav-link"><span>🔥</span> Habit Tracker</a>
+        <a href="appointments.html" class="nav-link"><span>📅</span> Appointments</a>
+        <a href="notes.html" class="nav-link"><span>📌</span> Notes</a>
+        <a href="reminders.html" class="nav-link"><span>🔔</span> Reminders</a>
+        <a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a>
+        <a href="emergency.html" class="nav-link"><span>🆘</span> Emergency Card</a>
+        <a href="profile.html" class="nav-link"><span>⚙️</span> Settings & Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logoutUser()" class="btn btn-danger" style="width: 100%;">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h2>Personal Finance & Budget Tracker</h2>
+        <div style="display: flex; gap: 0.75rem;">
+          <button id="set-budget-btn" class="btn btn-secondary">Set Monthly Budget</button>
+          <button id="add-expense-btn" class="btn btn-primary">+ Add Transaction</button>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <div id="budget-warning-banner" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">📈</div>
+            <div class="stat-info">
+              <h4>Monthly Income</h4>
+              <div id="total-income" class="value">₹0</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">📉</div>
+            <div class="stat-info">
+              <h4>Monthly Expenses</h4>
+              <div id="total-expenses" class="value">₹0</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">💵</div>
+            <div class="stat-info">
+              <h4>Total Savings</h4>
+              <div id="total-savings" class="value">₹0</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">📊</div>
+            <div class="stat-info">
+              <h4>Remaining Budget</h4>
+              <div id="remaining-budget" class="value">₹0</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-bottom: 1rem; font-size: 1.2rem; font-weight: 700;">Recent Transactions</h3>
+        <div id="expense-list-container"></div>
+      </main>
+    </div>
+  </div>
+
+  <div id="expense-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Add Financial Transaction</h3>
+        <button type="button" id="cancel-expense-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="expense-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="exp-amount">Amount (₹)</label>
+            <input type="number" id="exp-amount" class="form-control" placeholder="e.g. 1450" required min="1">
+          </div>
+          <div class="form-group">
+            <label for="exp-type">Transaction Type</label>
+            <select id="exp-type" class="form-control">
+              <option value="expense" selected>Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exp-category">Category</label>
+            <select id="exp-category" class="form-control">
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Education">Education</option>
+              <option value="Health">Health</option>
+              <option value="Bills">Bills</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Salary">Salary</option>
+              <option value="Freelance">Freelance</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exp-desc">Description</label>
+            <input type="text" id="exp-desc" class="form-control" placeholder="e.g. Grocery shopping">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="exp-date">Date</label>
+              <input type="date" id="exp-date" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="exp-payment">Payment Method</label>
+              <select id="exp-payment" class="form-control">
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="budget-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Set Monthly Spending Budget</h3>
+        <button type="button" id="cancel-budget-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="budget-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="budget-limit">Monthly Limit (₹)</label>
+            <input type="number" id="budget-limit" class="form-control" placeholder="e.g. 20000" required min="500">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Budget Limit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/expenses.js"></script>
+</body>
+</html>

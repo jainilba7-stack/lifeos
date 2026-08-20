@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS — Personal Life Management Platform</title>
+  <meta name="description" content="All-in-one personal life management platform combining tasks, expenses, reminders, documents, medicines, goals, appointments, notes, habits, analytics, and emergency profile into a single dashboard.">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <style>
+    .hero-section {
+      text-align: center;
+      padding: 6rem 1rem 4rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #38bdf8 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .feature-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: transform var(--transition-fast);
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+    }
+    .feature-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header style="padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
+    <div class="auth-logo">LifeOS</div>
+    <div style="display: flex; gap: 1rem;">
+      <a href="pages/login.html" class="btn btn-secondary">Sign In</a>
+      <a href="pages/register.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1 class="hero-title">Master Your Everyday Life from One Command Center</h1>
+    <p class="hero-subtitle">Stop juggling separate apps for tasks, expenses, reminders, document vault, medicines, goals, appointments, notes, and habit streaks. LifeOS unifies them all securely.</p>
+    <div style="display: flex; justify-content: center; gap: 1rem;">
+      <a href="pages/register.html" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1rem;">Create Free Account</a>
+      <a href="pages/login.html" class="btn btn-secondary" style="padding: 0.85rem 2rem; font-size: 1rem;">Open Dashboard</a>
+    </div>
+  </section>
+
+  <!-- Feature Grid -->
+  <section class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <h3>Smart Automated Insights</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Calculates spending velocity comparisons, task completion rates, upcoming bill alerts, and document expiry warnings automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📂</div>
+      <h3>Secure Document Vault</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Upload Aadhaar, Passport, Driving Licence, and Certificates with automated renewal date notifications.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔥</div>
+      <h3>Habit Tracker & Heatmaps</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Track daily exercise, reading, and coding routines with GitHub-style activity contribution calendars and streak counters.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💊</div>
+      <h3>Medicine Organizer</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Never miss a dose with scheduled reminders, pill quantity tracking, and history logs.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Finance & Budgeting</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Categorize income and expenses, set monthly spending limits, and receive smart budget alerts.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🆘</div>
+      <h3>Emergency Profile & QR</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Generate a privacy-focused emergency card QR code containing blood group, doctor contact, and allergies.</p>
+    </div>
+  </section>
+
+</body>
+</html>

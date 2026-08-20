@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Tracker — LifeOS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand">LifeOS</div></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>📊</span> Dashboard</a>
+        <a href="tasks.html" class="nav-link"><span>📝</span> Tasks</a>
+        <a href="expenses.html" class="nav-link"><span>💰</span> Expenses & Budget</a>
+        <a href="medicines.html" class="nav-link"><span>💊</span> Medicine Vault</a>
+        <a href="documents.html" class="nav-link"><span>📂</span> Document Vault</a>
+        <a href="goals.html" class="nav-link"><span>🎯</span> Goals</a>
+        <a href="habits.html" class="nav-link active"><span>🔥</span> Habit Tracker</a>
+        <a href="appointments.html" class="nav-link"><span>📅</span> Appointments</a>
+        <a href="notes.html" class="nav-link"><span>📌</span> Notes</a>
+        <a href="reminders.html" class="nav-link"><span>🔔</span> Reminders</a>
+        <a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a>
+        <a href="emergency.html" class="nav-link"><span>🆘</span> Emergency Card</a>
+        <a href="profile.html" class="nav-link"><span>⚙️</span> Settings & Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logoutUser()" class="btn btn-danger" style="width: 100%;">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h2>Habit Tracker & Heatmap Activity</h2>
+        <button id="add-habit-btn" class="btn btn-primary">+ New Habit</button>
+      </header>
+
+      <main class="content-body">
+        <div id="habits-container"></div>
+      </main>
+    </div>
+  </div>
+
+  <div id="habit-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Create New Daily Habit</h3>
+        <button type="button" id="cancel-habit-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="habit-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="habit-title">Habit Title</label>
+            <input type="text" id="habit-title" class="form-control" placeholder="e.g. Read 20 pages" required>
+          </div>
+          <div class="form-group">
+            <label for="habit-category">Category</label>
+            <select id="habit-category" class="form-control">
+              <option value="Reading">Reading</option>
+              <option value="Exercise">Exercise</option>
+              <option value="Coding">Coding</option>
+              <option value="Study">Study</option>
+              <option value="Water">Drink Water</option>
+              <option value="Meditation">Meditation</option>
+              <option value="Health">Health</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="habit-desc">Description</label>
+            <input type="text" id="habit-desc" class="form-control" placeholder="e.g. Daily non-fiction reading">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Start Tracking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/habits.js"></script>
+</body>
+</html>

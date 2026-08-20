@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics & Reports — LifeOS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand">LifeOS</div></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>📊</span> Dashboard</a>
+        <a href="tasks.html" class="nav-link"><span>📝</span> Tasks</a>
+        <a href="expenses.html" class="nav-link"><span>💰</span> Expenses & Budget</a>
+        <a href="medicines.html" class="nav-link"><span>💊</span> Medicine Vault</a>
+        <a href="documents.html" class="nav-link"><span>📂</span> Document Vault</a>
+        <a href="goals.html" class="nav-link"><span>🎯</span> Goals</a>
+        <a href="habits.html" class="nav-link"><span>🔥</span> Habit Tracker</a>
+        <a href="appointments.html" class="nav-link"><span>📅</span> Appointments</a>
+        <a href="notes.html" class="nav-link"><span>📌</span> Notes</a>
+        <a href="reminders.html" class="nav-link"><span>🔔</span> Reminders</a>
+        <a href="analytics.html" class="nav-link active"><span>📈</span> Analytics</a>
+        <a href="emergency.html" class="nav-link"><span>🆘</span> Emergency Card</a>
+        <a href="profile.html" class="nav-link"><span>⚙️</span> Settings & Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logoutUser()" class="btn btn-danger" style="width: 100%;">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h2>Life Analytics & Performance Reports</h2>
+      </header>
+
+      <main class="content-body">
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">📝</div>
+            <div class="stat-info">
+              <h4>Task Completion Rate</h4>
+              <div id="analytics-task-completion" class="value">0%</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">✅</div>
+            <div class="stat-info">
+              <h4>Completed Tasks</h4>
+              <div id="analytics-completed-tasks" class="value">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">⏳</div>
+            <div class="stat-info">
+              <h4>Pending Tasks</h4>
+              <div id="analytics-pending-tasks" class="value">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">🎯</div>
+            <div class="stat-info">
+              <h4>Avg Goal Progress</h4>
+              <div id="analytics-avg-goal" class="value">0%</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(129, 140, 248, 0.15); color: #818cf8;">🔥</div>
+            <div class="stat-info">
+              <h4>Best Habit Streak</h4>
+              <div id="analytics-max-streak" class="value">0 days</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: var(--radius-lg);">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Income This Month</div>
+            <div id="analytics-income" style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin-top: 0.2rem;">₹0</div>
+          </div>
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: var(--radius-lg);">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Expense This Month</div>
+            <div id="analytics-expense" style="font-size: 1.5rem; font-weight: 800; color: #ef4444; margin-top: 0.2rem;">₹0</div>
+          </div>
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: var(--radius-lg);">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Savings This Month</div>
+            <div id="analytics-savings" style="font-size: 1.5rem; font-weight: 800; color: #38bdf8; margin-top: 0.2rem;">₹0</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem;">
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Task Distribution by Category</h3>
+            <div style="height: 250px; position: relative;">
+              <canvas id="productivityChart"></canvas>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Category Expense Breakdown</h3>
+            <div style="height: 250px; position: relative;">
+              <canvas id="financeCategoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/analytics.js"></script>
+</body>
+</html>

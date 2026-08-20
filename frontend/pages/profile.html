@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings & Profile — LifeOS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand">LifeOS</div></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>📊</span> Dashboard</a>
+        <a href="tasks.html" class="nav-link"><span>📝</span> Tasks</a>
+        <a href="expenses.html" class="nav-link"><span>💰</span> Expenses & Budget</a>
+        <a href="medicines.html" class="nav-link"><span>💊</span> Medicine Vault</a>
+        <a href="documents.html" class="nav-link"><span>📂</span> Document Vault</a>
+        <a href="goals.html" class="nav-link"><span>🎯</span> Goals</a>
+        <a href="habits.html" class="nav-link"><span>🔥</span> Habit Tracker</a>
+        <a href="appointments.html" class="nav-link"><span>📅</span> Appointments</a>
+        <a href="notes.html" class="nav-link"><span>📌</span> Notes</a>
+        <a href="reminders.html" class="nav-link"><span>🔔</span> Reminders</a>
+        <a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a>
+        <a href="emergency.html" class="nav-link"><span>🆘</span> Emergency Card</a>
+        <a href="profile.html" class="nav-link active"><span>⚙️</span> Settings & Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logoutUser()" class="btn btn-danger" style="width: 100%;">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h2>Account Settings & Profile</h2>
+      </header>
+
+      <main class="content-body" style="max-width: 800px;">
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem;">
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem;">Personal Information</h3>
+          <form id="profile-form">
+            <div class="form-group">
+              <label for="prof-avatar-file">Profile Picture Avatar</label>
+              <input type="file" id="prof-avatar-file" class="form-control" accept="image/*">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="prof-fullName">Full Name</label>
+                <input type="text" id="prof-fullName" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="prof-username">Username</label>
+                <input type="text" id="prof-username" class="form-control" disabled readonly>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="prof-email">Email Address</label>
+                <input type="email" id="prof-email" class="form-control" disabled readonly>
+              </div>
+              <div class="form-group">
+                <label for="prof-phone">Phone Number</label>
+                <input type="text" id="prof-phone" class="form-control" placeholder="+91 9876543210">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="prof-dob">Date of Birth</label>
+              <input type="date" id="prof-dob" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="prof-bio">Bio / Personal Quote</label>
+              <textarea id="prof-bio" class="form-control" rows="2" placeholder="Tell us a bit about yourself..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+          </form>
+        </div>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem;">
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem;">Security & Password</h3>
+          <form id="password-form">
+            <div class="form-group">
+              <label for="curr-password">Current Password</label>
+              <input type="password" id="curr-password" class="form-control" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" class="form-control" required minlength="6">
+              </div>
+              <div class="form-group">
+                <label for="conf-password">Confirm New Password</label>
+                <input type="password" id="conf-password" class="form-control" required minlength="6">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-secondary">Update Password</button>
+          </form>
+        </div>
+
+        <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-lg); padding: 1.75rem;">
+          <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--accent-danger); margin-bottom: 0.5rem;">Danger Zone</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Permanently delete your account and remove all tasks, expenses, documents, goals, and notes.</p>
+          <button id="delete-account-btn" class="btn btn-danger">Delete Account Permanently</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/profile.js"></script>
+</body>
+</html>

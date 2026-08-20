@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goals — LifeOS</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand">LifeOS</div></div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link"><span>📊</span> Dashboard</a>
+        <a href="tasks.html" class="nav-link"><span>📝</span> Tasks</a>
+        <a href="expenses.html" class="nav-link"><span>💰</span> Expenses & Budget</a>
+        <a href="medicines.html" class="nav-link"><span>💊</span> Medicine Vault</a>
+        <a href="documents.html" class="nav-link"><span>📂</span> Document Vault</a>
+        <a href="goals.html" class="nav-link active"><span>🎯</span> Goals</a>
+        <a href="habits.html" class="nav-link"><span>🔥</span> Habit Tracker</a>
+        <a href="appointments.html" class="nav-link"><span>📅</span> Appointments</a>
+        <a href="notes.html" class="nav-link"><span>📌</span> Notes</a>
+        <a href="reminders.html" class="nav-link"><span>🔔</span> Reminders</a>
+        <a href="analytics.html" class="nav-link"><span>📈</span> Analytics</a>
+        <a href="emergency.html" class="nav-link"><span>🆘</span> Emergency Card</a>
+        <a href="profile.html" class="nav-link"><span>⚙️</span> Settings & Profile</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logoutUser()" class="btn btn-danger" style="width: 100%;">Logout</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <h2>Goal Management System</h2>
+        <button id="add-goal-btn" class="btn btn-primary">+ Create Goal</button>
+      </header>
+
+      <main class="content-body">
+        <div id="goals-container"></div>
+      </main>
+    </div>
+  </div>
+
+  <div id="goal-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Create New Goal</h3>
+        <button type="button" id="cancel-goal-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="goal-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="goal-title">Goal Title</label>
+            <input type="text" id="goal-title" class="form-control" placeholder="e.g. Solve 300 DSA Problems" required>
+          </div>
+          <div class="form-group">
+            <label for="goal-desc">Description</label>
+            <textarea id="goal-desc" class="form-control" rows="2" placeholder="Why this goal matters..."></textarea>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="goal-target">Target Value</label>
+              <input type="number" id="goal-target" class="form-control" value="300" required>
+            </div>
+            <div class="form-group">
+              <label for="goal-current">Current Progress</label>
+              <input type="number" id="goal-current" class="form-control" value="0" required>
+            </div>
+            <div class="form-group">
+              <label for="goal-unit">Unit</label>
+              <input type="text" id="goal-unit" class="form-control" placeholder="problems, %, ₹, kg" value="problems">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="goal-category">Category</label>
+              <select id="goal-category" class="form-control">
+                <option value="Education">Education</option>
+                <option value="Health">Health</option>
+                <option value="Finance">Finance</option>
+                <option value="Career">Career</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="goal-deadline">Target Deadline</label>
+              <input type="date" id="goal-deadline" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Goal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/goals.js"></script>
+</body>
+</html>
