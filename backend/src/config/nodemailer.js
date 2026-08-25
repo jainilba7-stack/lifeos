@@ -17,7 +17,7 @@ const createTransporter = () => {
       secure: process.env.SMTP_PORT === '465',
       auth: {
         user: "jsshah136@gmail.com",
-        pass: " gncr kvrc vjju xtiu"
+        pass: " gncrkvrcvjjuxtiu"
       }
     });
   }
