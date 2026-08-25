@@ -11,13 +11,14 @@ const isSMTPConfigured = () => {
 
 const createTransporter = () => {
   if (isSMTPConfigured()) {
+    const port = parseInt(process.env.SMTP_PORT || '465', 10);
     return nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: parseInt(process.env.SMTP_PORT || '465', 10),
-      secure: process.env.SMTP_PORT === '465',
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: port,
+      secure: port === 465,
       auth: {
-        user: "jsshah136@gmail.com",
-        pass: " gncrkvrcvjjuxtiu"
+        user: (process.env.SMTP_USER || 'jsshah136@gmail.com').trim(),
+        pass: (process.env.SMTP_PASS || 'gncrkvrcvjjuxtiu').trim()
       }
     });
   }
