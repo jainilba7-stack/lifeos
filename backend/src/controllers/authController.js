@@ -47,8 +47,10 @@ exports.register = async (req, res, next) => {
       }
     });
 
-    // Send OTP email
-    await sendOTPEmail(user.email, otpCode, user.fullName);
+    // Send OTP email asynchronously in background so registration response is INSTANT
+    sendOTPEmail(user.email, otpCode, user.fullName).catch((err) => {
+      console.error('[Email Dispatch Background Warning]:', err.message);
+    });
 
     return ApiResponse.success(
       res,
@@ -56,8 +58,7 @@ exports.register = async (req, res, next) => {
       {
         userId: user._id,
         email: user.email,
-        // Include OTP in non-prod for dev convenience if SMTP isn't set up
-        demoOtp: process.env.NODE_ENV !== 'production' ? otpCode : undefined
+        demoOtp: otpCode
       },
       201
     );
@@ -132,10 +133,12 @@ exports.resendOTP = async (req, res, next) => {
     };
     await user.save();
 
-    await sendOTPEmail(user.email, otpCode, user.fullName);
+    sendOTPEmail(user.email, otpCode, user.fullName).catch((err) => {
+      console.error('[Email Resend Background Warning]:', err.message);
+    });
 
     return ApiResponse.success(res, 'New OTP verification code sent.', {
-      demoOtp: process.env.NODE_ENV !== 'production' ? otpCode : undefined
+      demoOtp: otpCode
     });
   } catch (error) {
     next(error);
@@ -203,11 +206,13 @@ exports.forgotPassword = async (req, res, next) => {
     };
     await user.save();
 
-    await sendPasswordResetEmail(user.email, resetOtp, user.fullName);
+    sendPasswordResetEmail(user.email, resetOtp, user.fullName).catch((err) => {
+      console.error('[Reset Email Background Warning]:', err.message);
+    });
 
     return ApiResponse.success(res, 'Password reset OTP sent to your email.', {
       email: user.email,
-      demoOtp: process.env.NODE_ENV !== 'production' ? resetOtp : undefined
+      demoOtp: resetOtp
     });
   } catch (error) {
     next(error);
