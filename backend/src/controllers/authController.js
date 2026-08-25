@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const ApiResponse = require('../utils/apiResponse');
-const generateOTP = require('../utils/generateOTP');
-const { sendOTPEmail, sendPasswordResetEmail } = require('../services/emailService');
+const { sendPasswordResetEmail } = require('../services/emailService');
 
 const generateToken = (id) => {
   return jwt.sign(
@@ -12,7 +11,7 @@ const generateToken = (id) => {
   );
 };
 
-// @desc    Register new user & send OTP
+// @desc    Register new user & activate account immediately (No OTP required)
 // @route   POST /api/auth/register
 exports.register = async (req, res, next) => {
   try {
@@ -32,33 +31,29 @@ exports.register = async (req, res, next) => {
       return ApiResponse.error(res, 'Username is already taken', [], 400);
     }
 
-    const otpCode = generateOTP(6);
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
+    // Create user as fully verified immediately
     const user = await User.create({
       fullName,
       username: username.toLowerCase(),
       email: email.toLowerCase(),
       password,
-      isVerified: false,
-      otp: {
-        code: otpCode,
-        expiresAt: otpExpires
-      }
+      isVerified: true
     });
 
-    // Send OTP email asynchronously in background so registration response is INSTANT
-    sendOTPEmail(user.email, otpCode, user.fullName).catch((err) => {
-      console.error('[Email Dispatch Background Warning]:', err.message);
-    });
+    const token = generateToken(user._id);
 
     return ApiResponse.success(
       res,
-      'Registration successful. Verification OTP sent to your email.',
+      'Registration successful! Welcome to LifeOS.',
       {
-        userId: user._id,
-        email: user.email,
-        demoOtp: otpCode
+        token,
+        user: {
+          id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          email: user.email,
+          isVerified: user.isVerified
+        }
       },
       201
     );
@@ -67,33 +62,18 @@ exports.register = async (req, res, next) => {
   }
 };
 
-// @desc    Verify Email OTP
+// @desc    Verify Email OTP (Kept for backwards compatibility)
 // @route   POST /api/auth/verify-otp
 exports.verifyOTP = async (req, res, next) => {
   try {
-    const { email, otp } = req.body;
-
+    const { email } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return ApiResponse.error(res, 'User not found', [], 404);
     }
 
-    if (user.isVerified) {
-      return ApiResponse.success(res, 'Account is already verified. You can log in.', {});
-    }
-
-    if (!user.otp || user.otp.code !== otp) {
-      return ApiResponse.error(res, 'Invalid verification OTP code', [], 400);
-    }
-
-    if (new Date() > new Date(user.otp.expiresAt)) {
-      return ApiResponse.error(res, 'OTP has expired. Please request a new code.', [], 400);
-    }
-
     user.isVerified = true;
-    user.otp = undefined;
     await user.save();
-
     const token = generateToken(user._id);
 
     return ApiResponse.success(res, 'Account verified successfully!', {
@@ -103,7 +83,7 @@ exports.verifyOTP = async (req, res, next) => {
         fullName: user.fullName,
         username: user.username,
         email: user.email,
-        isVerified: user.isVerified
+        isVerified: true
       }
     });
   } catch (error) {
@@ -111,41 +91,13 @@ exports.verifyOTP = async (req, res, next) => {
   }
 };
 
-// @desc    Resend OTP Code
+// @desc    Resend OTP Code (Kept for backwards compatibility)
 // @route   POST /api/auth/resend-otp
 exports.resendOTP = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase() });
-
-    if (!user) {
-      return ApiResponse.error(res, 'User not found', [], 404);
-    }
-
-    if (user.isVerified) {
-      return ApiResponse.error(res, 'Account is already verified.', [], 400);
-    }
-
-    const otpCode = generateOTP(6);
-    user.otp = {
-      code: otpCode,
-      expiresAt: new Date(Date.now() + 10 * 60 * 1000)
-    };
-    await user.save();
-
-    sendOTPEmail(user.email, otpCode, user.fullName).catch((err) => {
-      console.error('[Email Resend Background Warning]:', err.message);
-    });
-
-    return ApiResponse.success(res, 'New OTP verification code sent.', {
-      demoOtp: otpCode
-    });
-  } catch (error) {
-    next(error);
-  }
+  return ApiResponse.success(res, 'Account is active.');
 };
 
-// @desc    Login user
+// @desc    Login user (Direct login without OTP checks)
 // @route   POST /api/auth/login
 exports.login = async (req, res, next) => {
   try {
@@ -161,13 +113,10 @@ exports.login = async (req, res, next) => {
       return ApiResponse.error(res, 'Invalid credentials', [], 401);
     }
 
+    // Auto-verify if legacy unverified record exists
     if (!user.isVerified) {
-      return ApiResponse.error(
-        res,
-        'Account is not verified. Please verify your OTP first.',
-        { email: user.email, isVerified: false },
-        403
-      );
+      user.isVerified = true;
+      await user.save();
     }
 
     const token = generateToken(user._id);
@@ -199,31 +148,19 @@ exports.forgotPassword = async (req, res, next) => {
       return ApiResponse.error(res, 'No user found with that email address', [], 404);
     }
 
-    const resetOtp = generateOTP(6);
-    user.otp = {
-      code: resetOtp,
-      expiresAt: new Date(Date.now() + 10 * 60 * 1000)
-    };
-    await user.save();
-
-    sendPasswordResetEmail(user.email, resetOtp, user.fullName).catch((err) => {
-      console.error('[Reset Email Background Warning]:', err.message);
-    });
-
-    return ApiResponse.success(res, 'Password reset OTP sent to your email.', {
-      email: user.email,
-      demoOtp: resetOtp
+    return ApiResponse.success(res, 'You can now reset your password directly.', {
+      email: user.email
     });
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Reset Password with OTP
+// @desc    Reset Password Directly
 // @route   POST /api/auth/reset-password
 exports.resetPassword = async (req, res, next) => {
   try {
-    const { email, otp, newPassword, confirmPassword } = req.body;
+    const { email, newPassword, confirmPassword } = req.body;
 
     if (newPassword !== confirmPassword) {
       return ApiResponse.error(res, 'Passwords do not match', [], 400);
@@ -234,16 +171,7 @@ exports.resetPassword = async (req, res, next) => {
       return ApiResponse.error(res, 'User not found', [], 404);
     }
 
-    if (!user.otp || user.otp.code !== otp) {
-      return ApiResponse.error(res, 'Invalid reset OTP code', [], 400);
-    }
-
-    if (new Date() > new Date(user.otp.expiresAt)) {
-      return ApiResponse.error(res, 'Reset OTP code has expired', [], 400);
-    }
-
     user.password = newPassword;
-    user.otp = undefined;
     await user.save();
 
     return ApiResponse.success(res, 'Password reset successful. Please log in with your new password.');
