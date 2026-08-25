@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, 'Email address is required'],
       unique: true,
       lowercase: true,
       trim: true
@@ -27,19 +27,6 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Password is required'],
       minlength: 6,
       select: false
-    },
-    isVerified: {
-      type: Boolean,
-      default: false
-    },
-    otp: {
-      code: String,
-      expiresAt: Date
-    },
-    role: {
-      type: String,
-      enum: ['user', 'admin'],
-      default: 'user'
     },
     profileImage: {
       type: String,
@@ -56,21 +43,32 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
-    preferences: {
-      theme: { type: String, default: 'dark' },
-      emailNotifications: { type: Boolean, default: true }
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user'
+    },
+    isVerified: {
+      type: Boolean,
+      default: true
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 );
 
+// Encrypt password before saving
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password')) {
+    return next();
+  }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
+// Compare entered password with hashed password
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

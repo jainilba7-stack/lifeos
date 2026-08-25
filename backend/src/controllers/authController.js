@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const ApiResponse = require('../utils/apiResponse');
-const { sendPasswordResetEmail } = require('../services/emailService');
 
 const generateToken = (id) => {
   return jwt.sign(
@@ -11,7 +10,7 @@ const generateToken = (id) => {
   );
 };
 
-// @desc    Register new user & activate account immediately (No OTP required)
+// @desc    Register new user & activate account instantly (No OTP / No Emails)
 // @route   POST /api/auth/register
 exports.register = async (req, res, next) => {
   try {
@@ -31,7 +30,7 @@ exports.register = async (req, res, next) => {
       return ApiResponse.error(res, 'Username is already taken', [], 400);
     }
 
-    // Create user as fully verified immediately
+    // Create user as 100% active and verified immediately
     const user = await User.create({
       fullName,
       username: username.toLowerCase(),
@@ -52,7 +51,7 @@ exports.register = async (req, res, next) => {
           fullName: user.fullName,
           username: user.username,
           email: user.email,
-          isVerified: user.isVerified
+          isVerified: true
         }
       },
       201
@@ -62,42 +61,32 @@ exports.register = async (req, res, next) => {
   }
 };
 
-// @desc    Verify Email OTP (Kept for backwards compatibility)
+// @desc    Verify Email (Backwards compatibility helper)
 // @route   POST /api/auth/verify-otp
 exports.verifyOTP = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      return ApiResponse.error(res, 'User not found', [], 404);
+    if (email) {
+      const user = await User.findOne({ email: email.toLowerCase() });
+      if (user && !user.isVerified) {
+        user.isVerified = true;
+        await user.save();
+      }
     }
 
-    user.isVerified = true;
-    await user.save();
-    const token = generateToken(user._id);
-
-    return ApiResponse.success(res, 'Account verified successfully!', {
-      token,
-      user: {
-        id: user._id,
-        fullName: user.fullName,
-        username: user.username,
-        email: user.email,
-        isVerified: true
-      }
-    });
+    return ApiResponse.success(res, 'Account verified successfully!', {});
   } catch (error) {
     next(error);
   }
 };
 
-// @desc    Resend OTP Code (Kept for backwards compatibility)
+// @desc    Resend OTP (Backwards compatibility helper)
 // @route   POST /api/auth/resend-otp
 exports.resendOTP = async (req, res, next) => {
   return ApiResponse.success(res, 'Account is active.');
 };
 
-// @desc    Login user (Direct login without OTP checks)
+// @desc    Login user (Direct login - auto fixes any legacy unverified accounts)
 // @route   POST /api/auth/login
 exports.login = async (req, res, next) => {
   try {
@@ -113,7 +102,7 @@ exports.login = async (req, res, next) => {
       return ApiResponse.error(res, 'Invalid credentials', [], 401);
     }
 
-    // Auto-verify if legacy unverified record exists
+    // Auto-verify existing legacy records so old test users can log in instantly
     if (!user.isVerified) {
       user.isVerified = true;
       await user.save();
@@ -129,7 +118,8 @@ exports.login = async (req, res, next) => {
         username: user.username,
         email: user.email,
         profileImage: user.profileImage,
-        role: user.role
+        role: user.role,
+        isVerified: true
       }
     });
   } catch (error) {
@@ -137,7 +127,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-// @desc    Forgot Password Request
+// @desc    Forgot Password Request (Direct Password Reset)
 // @route   POST /api/auth/forgot-password
 exports.forgotPassword = async (req, res, next) => {
   try {
@@ -148,7 +138,7 @@ exports.forgotPassword = async (req, res, next) => {
       return ApiResponse.error(res, 'No user found with that email address', [], 404);
     }
 
-    return ApiResponse.success(res, 'You can now reset your password directly.', {
+    return ApiResponse.success(res, 'You can now set a new password directly.', {
       email: user.email
     });
   } catch (error) {
@@ -156,7 +146,7 @@ exports.forgotPassword = async (req, res, next) => {
   }
 };
 
-// @desc    Reset Password Directly
+// @desc    Reset Password Directly (No OTP needed)
 // @route   POST /api/auth/reset-password
 exports.resetPassword = async (req, res, next) => {
   try {
