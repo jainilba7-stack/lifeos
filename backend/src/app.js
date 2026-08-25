@@ -39,7 +39,6 @@ app.use(
 app.use(
   cors({
     origin: function (origin, callback) {
-
       callback(null, true);
     },
     credentials: true,
@@ -50,14 +49,10 @@ app.use(
 
 // Handle preflight OPTIONS requests for all endpoints
 app.options('*', cors());
-//app.use(cors({
-// origin: ['http://localhost:5000', 'http://localhost:3000'],
-//credentials: true
-//}))
 
 // Express Rate Limiting
 const limiter = rateLimit({
-  windowMs: 59 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000, // 15 minutes
   max: 300,
   message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes' }
 });
