@@ -59,7 +59,7 @@ exports.updateEmergencyProfile = async (req, res, next) => {
   }
 };
 
-// @desc    Generate Emergency QR Code Data URL (Contains only explicitly shared fields)
+// @desc    Generate Emergency QR Code Data URL (Formats as readable text for mobile cameras)
 // @route   GET /api/emergency/qr
 exports.getEmergencyQR = async (req, res, next) => {
   try {
@@ -68,34 +68,33 @@ exports.getEmergencyQR = async (req, res, next) => {
       return ApiResponse.error(res, 'Emergency profile not configured', [], 404);
     }
 
-    // Build payload containing ONLY explicitly authorized fields
-    const publicPayload = {
-      cardType: 'LifeOS Emergency Card',
-      userName: req.user.fullName
-    };
+    // Format payload as human-readable structured text for phone camera scanners
+    const lines = [`🚨 LIFEOS EMERGENCY MEDICAL CARD 🚨`, `Name: ${req.user.fullName}`];
 
-    if (profile.sharedInQR.bloodGroup && profile.bloodGroup !== 'Unknown') {
-      publicPayload.bloodGroup = profile.bloodGroup;
+    if (profile.sharedInQR.bloodGroup && profile.bloodGroup && profile.bloodGroup !== 'Unknown') {
+      lines.push(`Blood Group: ${profile.bloodGroup}`);
     }
     if (profile.sharedInQR.emergencyContactName && profile.emergencyContactName) {
-      publicPayload.emergencyContactName = profile.emergencyContactName;
+      const relation = profile.emergencyContactRelation ? ` (${profile.emergencyContactRelation})` : '';
+      lines.push(`Emergency Contact: ${profile.emergencyContactName}${relation}`);
     }
     if (profile.sharedInQR.emergencyContactPhone && profile.emergencyContactPhone) {
-      publicPayload.emergencyContactPhone = profile.emergencyContactPhone;
+      lines.push(`Phone: ${profile.emergencyContactPhone}`);
     }
     if (profile.sharedInQR.allergies && profile.allergies) {
-      publicPayload.allergies = profile.allergies;
-    }
-    if (profile.sharedInQR.importantNotes && profile.importantNotes) {
-      publicPayload.importantNotes = profile.importantNotes;
+      lines.push(`Allergies: ${profile.allergies}`);
     }
     if (profile.sharedInQR.doctorContactPhone && profile.doctorContactPhone) {
-      publicPayload.doctorPhone = profile.doctorContactPhone;
+      lines.push(`Doctor Phone: ${profile.doctorContactPhone}`);
+    }
+    if (profile.sharedInQR.importantNotes && profile.importantNotes) {
+      lines.push(`Notes: ${profile.importantNotes}`);
     }
 
-    const payloadString = JSON.stringify(publicPayload, null, 2);
-    const qrDataUrl = await QRCode.toDataURL(payloadString, {
-      errorCorrectionLevel: 'H',
+    const payloadText = lines.join('\n');
+
+    const qrDataUrl = await QRCode.toDataURL(payloadText, {
+      errorCorrectionLevel: 'M',
       margin: 2,
       color: {
         dark: '#0f172a',
@@ -105,7 +104,7 @@ exports.getEmergencyQR = async (req, res, next) => {
 
     return ApiResponse.success(res, 'Emergency QR Code generated', {
       qrDataUrl,
-      publicPayload
+      payloadText
     });
   } catch (error) {
     next(error);

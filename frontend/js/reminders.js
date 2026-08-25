@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.remove('active');
   });
 
+  // Test Alarm Sound Button
+  document.getElementById('test-alarm-btn')?.addEventListener('click', () => {
+    playAlarmSound();
+    showToast('🔊 Alarm sound tested!', 'info');
+  });
+
   document.getElementById('reminder-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const title = document.getElementById('rem-title').value;
@@ -27,7 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST',
         body: { title, type, dateTime, repeatFrequency, notes }
       });
-      showToast('Reminder scheduled!', 'success');
+      playAlarmSound();
+      showToast('Reminder scheduled with Alarm!', 'success', true);
       modal.classList.remove('active');
       loadReminders();
     } catch (err) {
@@ -68,7 +75,10 @@ async function loadReminders() {
             📅 ${new Date(r.dateTime).toLocaleString()} • Repeat: ${r.repeatFrequency}
           </div>
         </div>
-        <button class="btn-icon" onclick="deleteReminder('${r._id}')">🗑️</button>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <button class="btn-icon" title="Test Alarm" onclick="playAlarmSound()">🔊</button>
+          <button class="btn-icon" title="Delete" onclick="deleteReminder('${r._id}')">🗑️</button>
+        </div>
       </div>
     `
       )

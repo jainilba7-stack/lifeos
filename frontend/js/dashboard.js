@@ -1,11 +1,56 @@
-/* LifeOS Main Dashboard Controller */
+/* LifeOS Main Dashboard & Responsive App Navigation Controller */
 
 document.addEventListener('DOMContentLoaded', async () => {
   checkAuth();
+  setupResponsiveNavigation();
   setupUserInfo();
-  await loadDashboardData();
+  if (document.getElementById('stat-tasks')) {
+    await loadDashboardData();
+  }
   setupGlobalSearchInput();
 });
+
+function setupResponsiveNavigation() {
+  const topbar = document.querySelector('.topbar');
+  const sidebar = document.querySelector('.sidebar');
+  if (!topbar || !sidebar) return;
+
+  // Ensure Mobile Hamburger Button Exists
+  let menuBtn = document.querySelector('.mobile-menu-btn');
+  if (!menuBtn) {
+    menuBtn = document.createElement('button');
+    menuBtn.className = 'mobile-menu-btn';
+    menuBtn.innerHTML = '☰';
+    menuBtn.setAttribute('aria-label', 'Toggle Menu');
+    topbar.insertBefore(menuBtn, topbar.firstChild);
+  }
+
+  // Ensure Backdrop Overlay Exists
+  let overlay = document.querySelector('.sidebar-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  const toggleMenu = () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  };
+
+  const closeMenu = () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  };
+
+  menuBtn.addEventListener('click', toggleMenu);
+  overlay.addEventListener('click', closeMenu);
+
+  // Close sidebar on mobile when nav links are clicked
+  document.querySelectorAll('.nav-link').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+}
 
 function setupUserInfo() {
   const user = getCurrentUser();
@@ -30,7 +75,6 @@ function setupUserInfo() {
 
 async function loadDashboardData() {
   try {
-    // 1. Fetch Parallel Data across modules
     const [tasksRes, expensesRes, goalsRes, medicinesRes, docsRes, apptsRes, insightsRes, notifsRes] = await Promise.all([
       apiCall('/tasks?status=pending'),
       apiCall('/expenses'),
@@ -42,26 +86,16 @@ async function loadDashboardData() {
       apiCall('/notifications')
     ]);
 
-    // 2. Render Metric Stat Cards
     document.getElementById('stat-tasks').textContent = tasksRes.data.count || 0;
     document.getElementById('stat-expenses').textContent = `₹${(expensesRes.data.summary.totalExpenses || 0).toLocaleString()}`;
     document.getElementById('stat-goals').textContent = goalsRes.data.metrics?.active || 0;
     document.getElementById('stat-expiring-docs').textContent = docsRes.data.expiringSoonCount || 0;
     document.getElementById('stat-appointments').textContent = apptsRes.data.count || 0;
 
-    // 3. Render Today's Timeline
     renderTimeline(medicinesRes.data.medicines, tasksRes.data.tasks, apptsRes.data.appointments);
-
-    // 4. Render Financial Summary Chart
     renderFinancialChart(expensesRes.data.summary);
-
-    // 5. Render Goals Progress Bars
     renderGoalsProgress(goalsRes.data.goals);
-
-    // 6. Render Smart Insights
     renderInsights(insightsRes.data.insights);
-
-    // 7. Render Notifications Dropdown & Badge
     renderNotificationsBadge(notifsRes.data);
 
   } catch (err) {
@@ -76,7 +110,6 @@ function renderTimeline(medicines = [], tasks = [], appointments = []) {
 
   const timelineItems = [];
 
-  // Add medicines
   medicines.forEach((m) => {
     timelineItems.push({
       time: m.reminderTime || '08:00',
@@ -86,7 +119,6 @@ function renderTimeline(medicines = [], tasks = [], appointments = []) {
     });
   });
 
-  // Add tasks
   tasks.slice(0, 3).forEach((t) => {
     const timeStr = t.dueDate ? new Date(t.dueDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '12:00 PM';
     timelineItems.push({
@@ -97,7 +129,6 @@ function renderTimeline(medicines = [], tasks = [], appointments = []) {
     });
   });
 
-  // Add appointments
   appointments.slice(0, 3).forEach((a) => {
     timelineItems.push({
       time: a.time || '02:00 PM',
@@ -107,7 +138,6 @@ function renderTimeline(medicines = [], tasks = [], appointments = []) {
     });
   });
 
-  // Sort chronologically
   timelineItems.sort((a, b) => a.time.localeCompare(b.time));
 
   if (timelineItems.length === 0) {

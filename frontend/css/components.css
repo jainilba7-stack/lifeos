@@ -11,6 +11,7 @@
   border-radius: var(--radius-md);
   margin-bottom: 0.75rem;
   transition: all var(--transition-fast);
+  gap: 0.75rem;
 }
 
 .task-item.completed {
@@ -31,6 +32,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .checkbox-custom.checked {
@@ -40,11 +42,17 @@
 }
 
 /* GitHub-Style Habit Activity Heatmap Matrix */
+.habit-heatmap-container {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
 .habit-heatmap-grid {
-  display: grid;
-  grid-template-columns: repeat(15, 1fr);
+  display: flex;
   gap: 6px;
   margin-top: 1rem;
+  min-width: max-content;
 }
 
 .heatmap-day {
@@ -53,6 +61,7 @@
   border-radius: 3px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 
 .heatmap-day.completed {
@@ -80,7 +89,7 @@
 /* Document Vault Cards */
 .document-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1.25rem;
 }
 
@@ -105,7 +114,7 @@
   background: linear-gradient(135deg, #1e1b4b, #0f172a);
   border: 2px solid rgba(239, 68, 68, 0.4);
   border-radius: var(--radius-xl);
-  padding: 2rem;
+  padding: 1.75rem;
   color: #fff;
   box-shadow: 0 10px 30px rgba(239, 68, 68, 0.15);
 }
@@ -123,6 +132,7 @@
 .qr-code-img {
   width: 200px;
   height: 200px;
+  max-width: 100%;
   border-radius: var(--radius-md);
   border: 4px solid #fff;
   background: #fff;
@@ -132,7 +142,7 @@
 /* Notes Masonry Grid */
 .notes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.25rem;
 }
 
@@ -157,4 +167,18 @@
   right: 1rem;
   color: var(--accent-primary);
   cursor: pointer;
+}
+
+/* Responsive Component Adjustments */
+@media (max-width: 640px) {
+  .document-grid,
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+  .task-item {
+    flex-wrap: wrap;
+  }
+  .emergency-card {
+    padding: 1.25rem;
+  }
 }
