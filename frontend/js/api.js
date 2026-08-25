@@ -1,14 +1,20 @@
 /* LifeOS Unified API & App Client Helper */
 // Automatically detect file:// protocol vs http:// server ports and route requests to Node backend (port 5000)
-const backendPort = '5000';
-const isFileProtocol = window.location.protocol === 'file:' || !window.location.hostname;
-const isBackendHost = window.location.port === backendPort;
 
-const API_BASE_URL = isBackendHost
-  ? '/api'
-  : isFileProtocol
-    ? 'https://lifeos-zk04.onrender.com'
-    : `${window.location.protocol}//${window.location.hostname}:${backendPort}/api`;
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+const API_BASE_URL = isLocal
+  ? 'http://localhost:5000/api'
+  : 'https://lifeos-zk04.onrender.com/api';
+//const backendPort = '5000';
+//const isFileProtocol = window.location.protocol === 'file:' || !window.location.hostname;
+//const isBackendHost = window.location.port === backendPort;
+
+//const API_BASE_URL = isBackendHost
+//? '/api'
+//: isFileProtocol
+//? 'https://lifeos-zk04.onrender.com'
+//  : `${window.location.protocol}//${window.location.hostname}:${backendPort}/api`;
 
 // Web Audio API Alarm Sound Synthesizer
 function playAlarmSound() {
