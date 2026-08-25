@@ -27,6 +27,9 @@ const searchRoutes = require('./routes/searchRoutes');
 
 const app = express();
 
+// Trust proxy header for Render / reverse proxy deployments
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(
   helmet({
