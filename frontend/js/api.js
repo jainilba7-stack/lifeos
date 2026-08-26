@@ -6,7 +6,7 @@ const isLocal = window.location.hostname === 'localhost' ||
 
 const API_BASE_URL = isLocal
   ? 'http://localhost:5000/api'
-  : 'https://lifeos-zk04.onrender.com/api';
+  : 'https://lifeos-7m5q.onrender.com';
 
 // Web Audio API Alarm Sound Synthesizer
 function playAlarmSound() {
