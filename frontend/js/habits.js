@@ -1,4 +1,4 @@
-/* LifeOS Habit Tracker Controller */
+/* LifeOS Habit Tracker Controller with Accuracy & Heatmap Metrics */
 
 document.addEventListener('DOMContentLoaded', () => {
   checkAuth();
@@ -62,16 +62,21 @@ async function loadHabits() {
       .map((h) => {
         const isDoneToday = logSet.has(`${h._id}_${todayStr}`);
 
-        // Generate past 30 days matrix
+        // Generate past 30 days matrix & calculate accuracy percentage
         let heatmapHTML = '';
+        let completedDays30 = 0;
         for (let i = 29; i >= 0; i--) {
           const d = new Date();
           d.setDate(d.getDate() - i);
           const dateStr = d.toISOString().split('T')[0];
           const isCompleted = logSet.has(`${h._id}_${dateStr}`);
 
-          heatmapHTML += `<div class="heatmap-day ${isCompleted ? 'completed' : ''}" title="${dateStr}"></div>`;
+          if (isCompleted) completedDays30++;
+
+          heatmapHTML += `<div class="heatmap-day ${isCompleted ? 'completed' : ''}" title="${dateStr}: ${isCompleted ? 'Completed' : 'Missed'}"></div>`;
         }
+
+        const accuracyPct = Math.round((completedDays30 / 30) * 100);
 
         return `
         <div class="habit-card">
@@ -79,6 +84,7 @@ async function loadHabits() {
             <div class="habit-card-info">
               <div class="habit-title-row">
                 <strong style="font-size: 1.15rem;">${h.title}</strong>
+                <span class="badge badge-success" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);">🎯 ${accuracyPct}% Accuracy</span>
                 <span class="badge badge-warning">🔥 ${h.streakCurrent} Day Streak</span>
                 <span class="badge badge-info">Best: ${h.streakBest}d</span>
               </div>
@@ -93,7 +99,10 @@ async function loadHabits() {
           </div>
 
           <div class="habit-heatmap-container">
-            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem;">Activity Heatmap (Past 30 Days)</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem;">
+              <span>Activity Heatmap (Past 30 Days)</span>
+              <span style="color: var(--accent-success);">${completedDays30}/30 Days Completed (${accuracyPct}%)</span>
+            </div>
             <div class="habit-heatmap-grid">
               ${heatmapHTML}
             </div>
