@@ -74,25 +74,25 @@ async function loadHabits() {
         }
 
         return `
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="habit-card">
+          <div class="habit-card-header">
+            <div class="habit-card-info">
+              <div class="habit-title-row">
                 <strong style="font-size: 1.15rem;">${h.title}</strong>
                 <span class="badge badge-warning">🔥 ${h.streakCurrent} Day Streak</span>
                 <span class="badge badge-info">Best: ${h.streakBest}d</span>
               </div>
               <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.2rem;">${h.description || h.category}</p>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="habit-actions-row">
               <button class="btn ${isDoneToday ? 'btn-secondary' : 'btn-primary'}" onclick="toggleHabit('${h._id}')">
                 ${isDoneToday ? '✓ Done Today' : 'Mark Completed'}
               </button>
-              <button class="btn-icon" onclick="deleteHabit('${h._id}')">🗑️</button>
+              <button class="btn-icon" onclick="deleteHabit('${h._id}')" aria-label="Delete Habit">🗑️</button>
             </div>
           </div>
 
-          <div style="margin-top: 1.25rem;">
+          <div class="habit-heatmap-container">
             <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.4rem;">Activity Heatmap (Past 30 Days)</div>
             <div class="habit-heatmap-grid">
               ${heatmapHTML}
